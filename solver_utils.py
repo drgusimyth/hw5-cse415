@@ -74,6 +74,17 @@ def q_update(
     """
     state, action, reward, next_state = transition
     # *** BEGIN OF YOUR CODE ***
+    if not mdp.is_goal(state):
+        maxQ = float('-inf')
+        for s, a in q_table:  # for each state action pair in qtable
+            if s == next_state:  # if we are looking at Q(s', a'), update maxQ
+                if q_table[s, a] > maxQ:
+                    maxQ = q_table[s, a]
+    else:  # don't do the above if at a goal state
+        maxQ = 0
+    gamma = mdp.config.gamma
+    sample = reward + gamma * maxQ
+    q_table[state, action] = (1 - alpha) * q_table[state, action] + alpha * sample
 
 
 def extract_v_table(mdp: tm.TohMdp, q_table: tm.QTable) -> tm.VTable:
@@ -88,6 +99,13 @@ def extract_v_table(mdp: tm.TohMdp, q_table: tm.QTable) -> tm.VTable:
             The extracted value table.
     """
     # *** BEGIN OF YOUR CODE ***
+    v_table = {}
+    for s, a in q_table:
+        if s not in v_table:
+            v_table[s] = float('-inf')
+        if q_table[s, a] > v_table[s]:
+            v_table[s] = q_table[s, a]
+    return v_table
 
 
 def choose_next_action(

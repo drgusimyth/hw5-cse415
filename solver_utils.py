@@ -32,7 +32,6 @@ def value_iteration(
     q_table: tm.QTable = {}
     # noinspection PyUnusedLocal
     max_delta = 0.0
-    # *** BEGIN OF YOUR CODE ***
     for state in mdp.nonterminal_states:
         # Compute the Q-value for each action in the current state
         for action in mdp.actions:
@@ -45,7 +44,6 @@ def value_iteration(
 
         # Compute the maximum absolute difference in value for any state
         max_delta = max(max_delta, abs(new_v_table[state] - v_table[state]))
-    # ***  END OF YOUR CODE  ***
     return new_v_table, q_table, max_delta
 
 
@@ -193,6 +191,7 @@ def custom_epsilon(n_step: int) -> float:
             epsilon value when choosing the nth step.
     """
     # *** BEGIN OF YOUR CODE ***
+
     return 1/n_step
 
 

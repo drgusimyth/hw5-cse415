@@ -139,6 +139,21 @@ def choose_next_action(
             The chosen action.
     """
     # *** BEGIN OF YOUR CODE ***
+    best = []
+    best_action = None
+    best_Q = float('-inf')
+    for s, a in q_table:  # find the best move
+        if s == state:
+            if q_table[s, a] > best_Q:
+                best_action = a
+                best_Q = q_table[s, a]
+    best.append(best_action)
+    for s, a in q_table:  # find any equally best moves
+        if s == state:
+            if q_table[s, a] == best_Q:
+                best.append(a)
+
+    return epsilon_greedy(best, epsilon)
 
 
 def custom_epsilon(n_step: int) -> float:
@@ -154,6 +169,7 @@ def custom_epsilon(n_step: int) -> float:
             epsilon value when choosing the nth step.
     """
     # *** BEGIN OF YOUR CODE ***
+    return 1/n_step
 
 
 def custom_alpha(n_step: int) -> float:

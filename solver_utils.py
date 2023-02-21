@@ -36,8 +36,8 @@ def value_iteration(
     for state in mdp.nonterminal_states:
         # Compute the Q-value for each action in the current state
         for action in mdp.actions:
-            next_state = mdp.step(state, action)
-            q_value = sum(0.8 * (mdp.reward(state, action, next_state) + 0.9 * next_state.v_table))
+            next_state, reward = mdp.step(state, action)
+            q_value = 0.8 * (mdp.reward(state, action, next_state) + new_v_table[next_state])
             q_table[(state, action)] = q_value
 
         # Update the value of the current state to the maximum Q-value
@@ -69,7 +69,15 @@ def extract_policy(
     # *** BEGIN OF YOUR CODE ***
     policy = {}
     for state in mdp.nonterminal_states:
-        best_action = max(mdp.actions(state), key=lambda a: q_table[(state, a)])
+        best_action = None
+        best_q_value = float("-inf")
+        for action in mdp.actions:
+            if (state,action) in q_table:
+                q_value = q_table[(state,action)]
+                if q_value > best_q_value:
+                    best_action = action
+                    best_q_value = q_value
+
         policy[state] = best_action
     return policy
 

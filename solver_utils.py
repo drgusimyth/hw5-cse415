@@ -33,6 +33,18 @@ def value_iteration(
     # noinspection PyUnusedLocal
     max_delta = 0.0
     # *** BEGIN OF YOUR CODE ***
+    for state in mdp.nonterminal_states:
+        # Compute the Q-value for each action in the current state
+        for action in mdp.actions:
+            next_state = mdp.step(state, action)
+            q_value = sum(0.8 * (mdp.reward(state, action, next_state) + 0.9 * next_state.v_table))
+            q_table[(state, action)] = q_value
+
+        # Update the value of the current state to the maximum Q-value
+        new_v_table[state] = max(q_table[(state, action)] for action in mdp.actions)
+
+        # Compute the maximum absolute difference in value for any state
+        max_delta = max(max_delta, abs(new_v_table[state] - v_table[state]))
     # ***  END OF YOUR CODE  ***
     return new_v_table, q_table, max_delta
 
@@ -55,7 +67,11 @@ def extract_policy(
             A Policy maps nonterminal states to actions.
     """
     # *** BEGIN OF YOUR CODE ***
-
+    policy = {}
+    for state in mdp.nonterminal_states:
+        best_action = max(mdp.actions(state), key=lambda a: q_table[(state, a)])
+        policy[state] = best_action
+    return policy
 
 def q_update(
         mdp: tm.TohMdp, q_table: tm.QTable,
